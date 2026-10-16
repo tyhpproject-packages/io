@@ -25,7 +25,7 @@ use Tyhp\Promise;
  */
 final class MySqlConnection implements DbConnection
 {
-    private const MAX_POLL_MS = 10;
+    private const int MAX_POLL_MS = 10;
     private \Tyhp\Io\Db\AsyncLock $lock;
     private bool $closed = false;
     private function __construct(private readonly \mysqli $mysqli, private readonly array $options)

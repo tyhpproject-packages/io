@@ -14,7 +14,7 @@ use Tyhp\Promise;
 
 final class FileLineIterator implements \Tyhp\Contracts\AsyncIterator
 {
-    private const LINES_PER_YIELD = 1000;
+    private const int LINES_PER_YIELD = 1000;
     private mixed $handle = null;
     private bool $done = false;
     private string $line = '';
