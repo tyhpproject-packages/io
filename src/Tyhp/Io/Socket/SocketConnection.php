@@ -173,7 +173,7 @@ final class SocketConnection
             try {
                 \Tyhp\Promise::_await($previous);
             } catch (\Throwable $e) {
-                $e;
+                (void) $e;
             }
             $offset = 0;
             $length = \strlen($data);
