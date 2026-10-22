@@ -67,7 +67,7 @@ final class PdoJob implements \Tyhp\Io\OffloadJob
                 $lastInsertId = $id;
             }
         } catch (\Throwable $e) {
-            $e;
+            (void) $e;
         }
         return new DbResult([], $prepared->rowCount(), $lastInsertId);
     }
