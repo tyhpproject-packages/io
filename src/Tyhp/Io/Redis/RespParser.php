@@ -16,7 +16,7 @@ use Tyhp\Io\Exceptions\RedisException;
  */
 final class RespParser
 {
-    private const int COMPACT_BYTES = 65536;
+    private const COMPACT_BYTES = 65536;
     private string $buffer = '';
     private int $offset = 0;
     public static function encode(array $arguments): string

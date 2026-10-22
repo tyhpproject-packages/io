@@ -1,9 +1,9 @@
 {
     "name": "tyhp/io",
-    "description": "Tyhp runtime io (PHP 8.5) — HTTP, processes, files, sockets, Redis, and databases on the tyhp/async event loop",
+    "description": "Tyhp runtime io (PHP 8.2) — HTTP, processes, files, sockets, Redis, and databases on the tyhp/async event loop",
     "type": "library",
     "license": "Apache-2.0",
-    "version": "805.0.2",
+    "version": "802.0.3",
     "extra": {
         "tyhp": {
             "interopContractVersion": 1,
@@ -21,7 +21,7 @@
         }
     },
     "require": {
-        "php": ">=8.5",
+        "php": ">=8.2",
         "tyhp/core": "802.0.* || 803.0.* || 804.0.* || 805.0.*",
         "tyhp/async": "802.0.* || 803.0.* || 804.0.* || 805.0.*"
     },

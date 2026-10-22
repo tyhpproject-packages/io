@@ -27,7 +27,7 @@ final class Dns
      */
     public static function resolveAsync(string $host, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
-        return \Tyhp\Io\Offload::runAsync__tyhpGeneric(\Tyhp\Type::generic('array', new \Tyhp\NamedType('TKey', \Tyhp\Type::int()), new \Tyhp\NamedType('TValue', \Tyhp\Type::string())))(new DnsLookup($host), $token);
+        return \Tyhp\Io\Offload::runAsync__tyhpGeneric(\Tyhp\Type::mapOf(\Tyhp\Type::int(), \Tyhp\Type::string()))(new DnsLookup($host), $token);
     }
 }
 //# sourceMappingURL=Dns.php.map

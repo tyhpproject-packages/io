@@ -1,5 +1,5 @@
 # tyhp/io
 
-Tyhp runtime package `tyhp/io` (version `805.0.2`, compiled for PHP 8.5).
+Tyhp runtime package `tyhp/io` (version `802.0.3`, compiled for PHP 8.2).
 
 For documentation, guides, and more information, visit **https://tyhplang.com**.

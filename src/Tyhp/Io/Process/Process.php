@@ -30,7 +30,7 @@ final class Process
      */
     public static function runAsync(array $command, ?array $options = null, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
-        $pending = \Tyhp\Io\IoPending::new_Tyhp_Io_IoPending__tyhpGeneric(\Tyhp\Type::struct('Tyhp\\Io\\Process\\ProcessResult', ['command' => \Tyhp\Type::generic('array', new \Tyhp\NamedType('TKey', \Tyhp\Type::int()), new \Tyhp\NamedType('TValue', \Tyhp\Type::string())), 'exitCode' => \Tyhp\Type::int(), 'signal' => \Tyhp\Type::int(), 'stdout' => \Tyhp\Type::string(), 'stderr' => \Tyhp\Type::string()], []));
+        $pending = \Tyhp\Io\IoPending::new_Tyhp_Io_IoPending__tyhpGeneric(\Tyhp\Type::ref('Tyhp\\Io\\Process\\ProcessResult'));
         try {
             $token?->throwIfCancellationRequested();
             if (\count($command) === 0) {

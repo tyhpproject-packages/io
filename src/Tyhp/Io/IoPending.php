@@ -110,8 +110,8 @@ final class IoPending
         }
         $t = $generics[0] ?? \Tyhp\Type::void();
         $this->__tyhpGeneric->init(static::class, \Tyhp\Io\IoPending::class, new \Tyhp\NamedType('T', $t));
-        $this->__tyhpGeneric->setPropertyType('deferred', \Tyhp\Type::generic(\Tyhp\Deferred::class, new \Tyhp\NamedType('T', $t)));
-        $this->__tyhpGeneric->setPropertyType('unregister', \Tyhp\Type::nullable(\Tyhp\Type::generic(\Closure::class, new \Tyhp\NamedType('TCallableShape', \Tyhp\Type::callableShape('callable')))));
+        $this->__tyhpGeneric->setPropertyType('deferred', \Tyhp\Type::generic(\Tyhp\Deferred::class)->param('T', $t));
+        $this->__tyhpGeneric->setPropertyType('unregister', \Tyhp\Type::nullable(\Tyhp\Type::closure()));
         $this->__tyhpGeneric->markBound();
     }
 }

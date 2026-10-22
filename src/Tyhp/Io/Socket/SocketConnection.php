@@ -23,7 +23,7 @@ use Tyhp\Promise;
  */
 final class SocketConnection
 {
-    private const int CHUNK_BYTES = 65536;
+    private const CHUNK_BYTES = 65536;
     private string $buffer = '';
     private bool $eof = false;
     private bool $closed = false;
@@ -173,7 +173,7 @@ final class SocketConnection
             try {
                 \Tyhp\Promise::_await($previous);
             } catch (\Throwable $e) {
-                (void) $e;
+                $e;
             }
             $offset = 0;
             $length = \strlen($data);

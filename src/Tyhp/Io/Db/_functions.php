@@ -8,8 +8,11 @@ declare(strict_types=1);
 
 namespace Tyhp\Io\Db;
 
-function DbValue(): \Tyhp\Type
-{
-    return \Tyhp\Type::union(\Tyhp\Type::int(), \Tyhp\Type::float(), \Tyhp\Type::string(), \Tyhp\Type::bool(), \Tyhp\Type::null());
-}
+\Tyhp\Type::register('Tyhp\\Io\\Db\\DbStatement', fn() => \Tyhp\Type::struct()->optional('sql', \Tyhp\Type::string())->optional('params', \Tyhp\Type::mapOf(\Tyhp\Type::int(), \Tyhp\Type::ref('Tyhp\\Io\\Db\\DbValue'))));
+
+\Tyhp\Type::register('Tyhp\\Io\\Db\\DbValue', fn() => \Tyhp\Type::union(\Tyhp\Type::int(), \Tyhp\Type::float(), \Tyhp\Type::string(), \Tyhp\Type::bool(), \Tyhp\Type::null()));
+
+\Tyhp\Type::register('Tyhp\\Io\\Db\\MySqlOptions', fn() => \Tyhp\Type::struct()->optional('host', \Tyhp\Type::string())->optional('port', \Tyhp\Type::int())->optional('user', \Tyhp\Type::string())->optional('password', \Tyhp\Type::string())->optional('database', \Tyhp\Type::string())->optional('charset', \Tyhp\Type::string())->optional('socket', \Tyhp\Type::nullable(\Tyhp\Type::string()))->optional('connectTimeoutSeconds', \Tyhp\Type::int()));
+
+\Tyhp\Type::register('Tyhp\\Io\\Db\\PdoOptions', fn() => \Tyhp\Type::struct()->optional('dsn', \Tyhp\Type::string())->optional('username', \Tyhp\Type::nullable(\Tyhp\Type::string()))->optional('password', \Tyhp\Type::nullable(\Tyhp\Type::string()))->optional('attributes', \Tyhp\Type::mapOf(\Tyhp\Type::int(), \Tyhp\Type::union(\Tyhp\Type::int(), \Tyhp\Type::string(), \Tyhp\Type::bool()))));
 //# sourceMappingURL=_functions.php.map

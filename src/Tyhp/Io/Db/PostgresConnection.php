@@ -147,7 +147,7 @@ final class PostgresConnection implements DbConnection
                         try {
                             \Tyhp\Promise::_await($this->execute('ROLLBACK', [], null));
                         } catch (\Throwable $rollbackError) {
-                            (void) $rollbackError;
+                            $rollbackError;
                         }
                     }
                     throw $e;

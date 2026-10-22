@@ -8,4 +8,5 @@ declare(strict_types=1);
 
 namespace Tyhp\Io\Http;
 
+\Tyhp\Type::register('Tyhp\\Io\\Http\\HttpRequest', fn() => \Tyhp\Type::struct()->optional('url', \Tyhp\Type::string())->optional('method', \Tyhp\Type::string())->optional('headers', \Tyhp\Type::mapOf(\Tyhp\Type::string(), \Tyhp\Type::string()))->optional('body', \Tyhp\Type::string())->optional('timeoutMs', \Tyhp\Type::int())->optional('connectTimeoutMs', \Tyhp\Type::int())->optional('followRedirects', \Tyhp\Type::bool())->optional('maxRedirects', \Tyhp\Type::int())->optional('verifyTls', \Tyhp\Type::bool()));
 //# sourceMappingURL=_functions.php.map

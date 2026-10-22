@@ -25,7 +25,7 @@ use Tyhp\Promise;
  */
 final class MySqlConnection implements DbConnection
 {
-    private const int MAX_POLL_MS = 10;
+    private const MAX_POLL_MS = 10;
     private \Tyhp\Io\Db\AsyncLock $lock;
     private bool $closed = false;
     private function __construct(private readonly \mysqli $mysqli, private readonly array $options)
@@ -89,7 +89,7 @@ final class MySqlConnection implements DbConnection
                         try {
                             \Tyhp\Promise::_await($this->execute('ROLLBACK', [], null));
                         } catch (\Throwable $rollbackError) {
-                            (void) $rollbackError;
+                            $rollbackError;
                         }
                     }
                     throw $e;
@@ -141,7 +141,7 @@ final class MySqlConnection implements DbConnection
                         try {
                             $this->mysqli->reap_async_query();
                         } catch (\Throwable $reapError) {
-                            (void) $reapError;
+                            $reapError;
                         }
                         throw $e;
                     }
@@ -176,7 +176,7 @@ final class MySqlConnection implements DbConnection
                 $killer->close();
             }
         } catch (\Throwable $e) {
-            (void) $e;
+            $e;
         }
     }
 }

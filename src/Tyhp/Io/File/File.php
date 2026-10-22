@@ -24,7 +24,7 @@ use Tyhp\Promise;
  */
 final class File
 {
-    public const int CHUNK_BYTES = 262144;
+    public const CHUNK_BYTES = 262144;
     public static function readAsync(string $path, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($path, $token): string {

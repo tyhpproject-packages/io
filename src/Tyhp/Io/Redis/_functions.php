@@ -8,4 +8,5 @@ declare(strict_types=1);
 
 namespace Tyhp\Io\Redis;
 
+\Tyhp\Type::register('Tyhp\\Io\\Redis\\RedisOptions', fn() => \Tyhp\Type::struct()->optional('host', \Tyhp\Type::string())->optional('port', \Tyhp\Type::int())->optional('tls', \Tyhp\Type::bool())->optional('username', \Tyhp\Type::nullable(\Tyhp\Type::string()))->optional('password', \Tyhp\Type::nullable(\Tyhp\Type::string()))->optional('database', \Tyhp\Type::int())->optional('connectTimeoutMs', \Tyhp\Type::int()));
 //# sourceMappingURL=_functions.php.map

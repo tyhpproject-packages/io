@@ -8,4 +8,7 @@ declare(strict_types=1);
 
 namespace Tyhp\Io\Process;
 
+\Tyhp\Type::register('Tyhp\\Io\\Process\\ProcessOptions', fn() => \Tyhp\Type::struct()->optional('cwd', \Tyhp\Type::nullable(\Tyhp\Type::string()))->optional('env', \Tyhp\Type::nullable(\Tyhp\Type::mapOf(\Tyhp\Type::string(), \Tyhp\Type::string())))->optional('input', \Tyhp\Type::string())->optional('timeoutMs', \Tyhp\Type::int()));
+
+\Tyhp\Type::register('Tyhp\\Io\\Process\\ProcessResult', fn() => \Tyhp\Type::struct()->optional('command', \Tyhp\Type::mapOf(\Tyhp\Type::int(), \Tyhp\Type::string()))->optional('exitCode', \Tyhp\Type::int())->optional('signal', \Tyhp\Type::int())->optional('stdout', \Tyhp\Type::string())->optional('stderr', \Tyhp\Type::string()));
 //# sourceMappingURL=_functions.php.map
