@@ -105,7 +105,7 @@ final class MySqlConnection implements DbConnection
                         try {
                             \Tyhp\Promise::_await($this->execute('ROLLBACK', [], null));
                         } catch (\Throwable $rollbackError) {
-                            $rollbackError;
+                            (void) $rollbackError;
                         }
                     }
                     throw $e;
@@ -160,7 +160,7 @@ final class MySqlConnection implements DbConnection
                         try {
                             $this->mysqli->reap_async_query();
                         } catch (\Throwable $reapError) {
-                            $reapError;
+                            (void) $reapError;
                         }
                         throw $e;
                     }
@@ -195,7 +195,7 @@ final class MySqlConnection implements DbConnection
                 $killer->close();
             }
         } catch (\Throwable $e) {
-            $e;
+            (void) $e;
         }
     }
 }
