@@ -19,8 +19,8 @@ use Tyhp\Io\IoPending;
  */
 final class ProcessRun
 {
-    private const CHUNK_BYTES = 65536;
-    private const STATUS_POLL_MS = 5;
+    private const int CHUNK_BYTES = 65536;
+    private const int STATUS_POLL_MS = 5;
     private mixed $process = null;
     /**
      * @var array<int, mixed>

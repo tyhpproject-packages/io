@@ -23,7 +23,7 @@ use Tyhp\Promise;
  */
 final class SocketConnection
 {
-    private const CHUNK_BYTES = 65536;
+    private const int CHUNK_BYTES = 65536;
     private string $buffer = '';
     private bool $eof = false;
     private bool $closed = false;
