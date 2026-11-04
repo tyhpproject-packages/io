@@ -21,11 +21,17 @@ interface DbConnection
 {
     /**
      * Runs one statement with positional parameters.
+     *
+     * @param array<int, int|float|string|bool|null> $params
+     * @return \Tyhp\Promise<\Tyhp\Io\Db\DbResult>
      */
     public function queryAsync(string $sql, array $params = [], ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise;
     /**
      * Runs the statements in one transaction and resolves with one result per
      * statement. The first failure rolls the transaction back and rejects.
+     *
+     * @param array<int, array{sql?: string, params?: array<int, int|float|string|bool|null>}> $statements
+     * @return \Tyhp\Promise<array<int, \Tyhp\Io\Db\DbResult>>
      */
     public function transactionAsync(array $statements, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise;
     public function close(): void;

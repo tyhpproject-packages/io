@@ -8,6 +8,9 @@ declare(strict_types=1);
 
 namespace Tyhp\Io\Redis;
 
+/**
+ * @internal
+ */
 final class RespReply
 {
     public function __construct(public readonly mixed $value, public readonly ?string $error, public readonly int $end) {}

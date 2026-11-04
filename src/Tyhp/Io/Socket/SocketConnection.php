@@ -23,14 +23,30 @@ use Tyhp\Promise;
  */
 final class SocketConnection
 {
-    private const int CHUNK_BYTES = 65536;
+    private const CHUNK_BYTES = 65536;
     private string $buffer = '';
     private bool $eof = false;
     private bool $closed = false;
     private bool $reading = false;
+    /**
+     * @var \Tyhp\Promise<void>
+     */
+    #[\Tyhp\PropertyType('Tyhp\\Promise<void>')]
     private \Tyhp\Promise $writeTail;
+    /**
+     * @var ?\Tyhp\Io\IoPending<void>
+     */
+    #[\Tyhp\PropertyType('?Tyhp\\Io\\IoPending<void>')]
     private ?\Tyhp\Io\IoPending $readWait = null;
+    /**
+     * @var ?\Tyhp\Io\IoPending<void>
+     */
+    #[\Tyhp\PropertyType('?Tyhp\\Io\\IoPending<void>')]
     private ?\Tyhp\Io\IoPending $writeWait = null;
+    /**
+     * @internal
+     * @param resource $stream
+     */
     public function __construct(private readonly mixed $stream)
     {
         $this->writeTail = \Tyhp\Generic::bind(\Tyhp\Promise::resolved(...), \Tyhp\Type::void())();
@@ -104,6 +120,8 @@ final class SocketConnection
     }
     /**
      * Resolves once every byte of $data has been handed to the operating system.
+     *
+     * @return \Tyhp\Promise<void>
      */
     public function writeAsync(string $data, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
@@ -134,6 +152,9 @@ final class SocketConnection
     {
         return $this->closed;
     }
+    /**
+     * @internal
+     */
     public function enableTls(string $peerName, ?\Tyhp\CancellationToken $token): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($peerName, $token): void {
@@ -154,6 +175,9 @@ final class SocketConnection
             }
         });
     }
+    /**
+     * @return \Tyhp\Promise<void>
+     */
     private function waitFor(bool $write, ?\Tyhp\CancellationToken $token): \Tyhp\Promise
     {
         if ($this->closed) {
@@ -167,13 +191,16 @@ final class SocketConnection
         }
         return $wait->promise();
     }
+    /**
+     * @param \Tyhp\Promise<void> $previous
+     */
     private function writeAfter(\Tyhp\Promise $previous, string $data, ?\Tyhp\CancellationToken $token): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($previous, $data, $token): void {
             try {
                 \Tyhp\Promise::_await($previous);
             } catch (\Throwable $e) {
-                (void) $e;
+                $e;
             }
             $offset = 0;
             $length = \strlen($data);

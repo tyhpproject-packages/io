@@ -25,13 +25,19 @@ use Tyhp\Promise;
  */
 final class MySqlConnection implements DbConnection
 {
-    private const int MAX_POLL_MS = 10;
+    private const MAX_POLL_MS = 10;
     private \Tyhp\Io\Db\AsyncLock $lock;
     private bool $closed = false;
-    private function __construct(private readonly \mysqli $mysqli, private readonly array $options)
+    /**
+     * @param array{host?: string, port?: int, user?: string, password?: string, database?: string, charset?: string, socket?: ?string, connectTimeoutSeconds?: int} $options
+     */
+    private function __construct(private readonly \mysqli $mysqli, #[\Tyhp\PropertyType('struct Tyhp\\Io\\Db\\MySqlOptions')] private readonly array $options)
     {
         $this->lock = new AsyncLock();
     }
+    /**
+     * @param ?array{host?: string, port?: int, user?: string, password?: string, database?: string, charset?: string, socket?: ?string, connectTimeoutSeconds?: int} $options
+     */
     public static function connectAsync(?array $options = null, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($options, $token): \Tyhp\Io\Db\MySqlConnection {
@@ -41,6 +47,9 @@ final class MySqlConnection implements DbConnection
             return new MySqlConnection(self::open($settings), $settings);
         });
     }
+    /**
+     * @param array{host?: string, port?: int, user?: string, password?: string, database?: string, charset?: string, socket?: ?string, connectTimeoutSeconds?: int} $options
+     */
     private static function open(array $options): \mysqli
     {
         $mysqli = \mysqli_init();
@@ -61,6 +70,9 @@ final class MySqlConnection implements DbConnection
         }
         return $mysqli;
     }
+    /**
+     * @param array<int, int|float|string|bool|null> $params
+     */
     public function queryAsync(string $sql, array $params = [], ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($sql, $params, $token): \Tyhp\Io\Db\DbResult {
@@ -72,6 +84,10 @@ final class MySqlConnection implements DbConnection
             }
         });
     }
+    /**
+     * @param array<int, array{sql?: string, params?: array<int, int|float|string|bool|null>}> $statements
+     * @return array<int, \Tyhp\Io\Db\DbResult>
+     */
     public function transactionAsync(array $statements, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($statements, $token): array {
@@ -89,7 +105,7 @@ final class MySqlConnection implements DbConnection
                         try {
                             \Tyhp\Promise::_await($this->execute('ROLLBACK', [], null));
                         } catch (\Throwable $rollbackError) {
-                            (void) $rollbackError;
+                            $rollbackError;
                         }
                     }
                     throw $e;
@@ -108,6 +124,9 @@ final class MySqlConnection implements DbConnection
         $this->closed = true;
         $this->mysqli->close();
     }
+    /**
+     * @param array<int, int|float|string|bool|null> $params
+     */
     private function execute(string $sql, array $params, ?\Tyhp\CancellationToken $token): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($sql, $params, $token): \Tyhp\Io\Db\DbResult {
@@ -141,7 +160,7 @@ final class MySqlConnection implements DbConnection
                         try {
                             $this->mysqli->reap_async_query();
                         } catch (\Throwable $reapError) {
-                            (void) $reapError;
+                            $reapError;
                         }
                         throw $e;
                     }
@@ -176,7 +195,7 @@ final class MySqlConnection implements DbConnection
                 $killer->close();
             }
         } catch (\Throwable $e) {
-            (void) $e;
+            $e;
         }
     }
 }

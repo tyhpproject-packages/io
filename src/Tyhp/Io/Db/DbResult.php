@@ -29,11 +29,17 @@ use Tyhp\Type;
  */
 final class DbResult
 {
-    public function __construct(public readonly array $rows = [], public readonly int $affectedRows = 0, public readonly ?string $lastInsertId = null) {}
+    /**
+     * @param array<int, array<string, mixed>> $rows
+     */
+    public function __construct(#[\Tyhp\PropertyType('array<int, array<string, mixed>>')] public readonly array $rows = [], public readonly int $affectedRows = 0, public readonly ?string $lastInsertId = null) {}
     public function count(): int
     {
         return \count($this->rows);
     }
+    /**
+     * @return ?array<string, mixed>
+     */
     public function first(): ?array
     {
         return $this->rows[0] ?? null;
@@ -55,8 +61,11 @@ final class DbResult
     /**
      * Returns every row as T. Throws IncompatibleTypeException for the first row
      * that does not match T.
+     *
+     * @template T of array
+     * @return array<int, T>
      */
-    #[\Tyhp\GenericRuntime(erased: false, binder: "rowsAs__tyhpGeneric", layouts: [1], compiler: "805.1.0.0")]
+    #[\Tyhp\GenericRuntime(erased: false, binder: "rowsAs__tyhpGeneric", layouts: [1], compiler: "805.1.2.0")]
     public function rowsAs(): array
     {
         return $this->rowsAs__tyhpGeneric(null)();
@@ -81,8 +90,11 @@ final class DbResult
     }
     /**
      * Returns the first row as T, or null when there are no rows.
+     *
+     * @template T of array
+     * @return ?T
      */
-    #[\Tyhp\GenericRuntime(erased: false, binder: "firstAs__tyhpGeneric", layouts: [1], compiler: "805.1.0.0")]
+    #[\Tyhp\GenericRuntime(erased: false, binder: "firstAs__tyhpGeneric", layouts: [1], compiler: "805.1.2.0")]
     public function firstAs(): ?array
     {
         return $this->firstAs__tyhpGeneric(null)();

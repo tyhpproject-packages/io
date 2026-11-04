@@ -16,16 +16,24 @@ use Tyhp\Promise;
 /**
  * One in-flight operation. The first resolve() or reject() settles it; later
  * calls are ignored, so completion, timeout, and cancellation callbacks can race.
- * @template T
+ *
+ * @internal
+ * @template T = void
  */
-#[\Tyhp\GenericRuntime(erased: false, factory: "new_Tyhp_Io_IoPending__tyhpGeneric", layouts: [1], compiler: "805.1.0.0")]
+#[\Tyhp\GenericRuntime(erased: false, factory: "new_Tyhp_Io_IoPending__tyhpGeneric", layouts: [1], compiler: "805.1.2.0")]
 final class IoPending
 {
     use \Tyhp\Concerns\HasGenerics;
 
     private static ?\ReflectionClass $__reflectedClass__tyhpGeneric = null;
+    /**
+     * @var \Tyhp\Deferred<T>
+     */
     private \Tyhp\Deferred $deferred;
     private bool $settled = false;
+    /**
+     * @var ?\Closure<callable(): void>
+     */
     private ?\Closure $unregister = null;
     public function __construct()
     {
@@ -43,6 +51,9 @@ final class IoPending
         $__tyhp_obj->__construct();
         return $__tyhp_obj;
     }
+    /**
+     * @return \Tyhp\Promise<T>
+     */
     public function promise(): \Tyhp\Promise
     {
         return $this->deferred->getPromise();
@@ -54,6 +65,8 @@ final class IoPending
     /**
      * When $token is cancelled before this settles, runs $onCancel and rejects
      * with OperationCancelledException. $onCancel must not throw.
+     *
+     * @param callable(): void $onCancel
      */
     public function cancelWith(?\Tyhp\CancellationToken $token, callable $onCancel): void
     {
@@ -76,6 +89,9 @@ final class IoPending
         }
         $this->unregister = $unregister;
     }
+    /**
+     * @param ?T $value
+     */
     public function resolve(mixed $value = null): void
     {
         if ($this->settled) {

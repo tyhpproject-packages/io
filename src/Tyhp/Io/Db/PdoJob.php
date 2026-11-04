@@ -11,14 +11,32 @@ namespace Tyhp\Io\Db;
 use Tyhp\Io\Exceptions\IoUnavailableException;
 use Tyhp\Io\OffloadJob;
 
+/**
+ * @internal
+ * @implements \Tyhp\Io\OffloadJob<\Tyhp\Io\Db\PdoOutcome>
+ */
 final class PdoJob implements \Tyhp\Io\OffloadJob
 {
+    /**
+     * @var array<string, \PDO>
+     */
+    #[\Tyhp\PropertyType('array<string, PDO>')]
     private static array $connections = [];
-    public function __construct(private readonly array $options, private readonly array $statements, private readonly bool $transaction) {}
+    /**
+     * @param array{dsn?: string, username?: ?string, password?: ?string, attributes?: array<int, int|string|bool>} $options
+     * @param array<int, array{sql?: string, params?: array<int, int|float|string|bool|null>}> $statements
+     */
+    public function __construct(#[\Tyhp\PropertyType('struct Tyhp\\Io\\Db\\PdoOptions')] private readonly array $options, #[\Tyhp\PropertyType('array<int, struct Tyhp\\Io\\Db\\DbStatement>')] private readonly array $statements, private readonly bool $transaction) {}
+    /**
+     * @param array{dsn?: string, username?: ?string, password?: ?string, attributes?: array<int, int|string|bool>} $options
+     */
     public static function forget(array $options): void
     {
         unset(self::$connections[self::key($options)]);
     }
+    /**
+     * @param array{dsn?: string, username?: ?string, password?: ?string, attributes?: array<int, int|string|bool>} $options
+     */
     private static function connection(array $options): \PDO
     {
         $key = self::key($options);
@@ -32,10 +50,16 @@ final class PdoJob implements \Tyhp\Io\OffloadJob
         self::$connections[$key] = $pdo;
         return $pdo;
     }
+    /**
+     * @param array{dsn?: string, username?: ?string, password?: ?string, attributes?: array<int, int|string|bool>} $options
+     */
     private static function key(array $options): string
     {
         return \hash('sha256', ((($options['dsn'] . "\0") . ($options['username'] ?? '')) . "\0") . ($options['password'] ?? ''));
     }
+    /**
+     * @param array{sql?: string, params?: array<int, int|float|string|bool|null>} $statement
+     */
     private static function execute(\PDO $pdo, array $statement): \Tyhp\Io\Db\DbResult
     {
         $prepared = $pdo->prepare($statement['sql']);
@@ -67,7 +91,7 @@ final class PdoJob implements \Tyhp\Io\OffloadJob
                 $lastInsertId = $id;
             }
         } catch (\Throwable $e) {
-            (void) $e;
+            $e;
         }
         return new DbResult([], $prepared->rowCount(), $lastInsertId);
     }

@@ -24,13 +24,19 @@ use Tyhp\Io\Offload;
 final class PdoConnection implements DbConnection
 {
     private \Tyhp\Io\Db\AsyncLock $lock;
-    public function __construct(private readonly array $options)
+    /**
+     * @param array{dsn?: string, username?: ?string, password?: ?string, attributes?: array<int, int|string|bool>} $options
+     */
+    public function __construct(#[\Tyhp\PropertyType('struct Tyhp\\Io\\Db\\PdoOptions')] private readonly array $options)
     {
         if ($options['dsn'] === '') {
             throw new \InvalidArgumentException('PdoOptions dsn is required.');
         }
         $this->lock = new AsyncLock();
     }
+    /**
+     * @param array<int, int|float|string|bool|null> $params
+     */
     public function queryAsync(string $sql, array $params = [], ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($sql, $params, $token): \Tyhp\Io\Db\DbResult {
@@ -38,6 +44,10 @@ final class PdoConnection implements DbConnection
             return $results[0];
         });
     }
+    /**
+     * @param array<int, array{sql?: string, params?: array<int, int|float|string|bool|null>}> $statements
+     * @return array<int, \Tyhp\Io\Db\DbResult>
+     */
     public function transactionAsync(array $statements, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($statements, $token): array {
@@ -52,6 +62,10 @@ final class PdoConnection implements DbConnection
     {
         PdoJob::forget($this->options);
     }
+    /**
+     * @param array<int, array{sql?: string, params?: array<int, int|float|string|bool|null>}> $statements
+     * @return array<int, \Tyhp\Io\Db\DbResult>
+     */
     private function submit(array $statements, bool $transaction, ?\Tyhp\CancellationToken $token): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($statements, $transaction, $token): array {

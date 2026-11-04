@@ -10,10 +10,20 @@ namespace Tyhp\Io\Http;
 
 use Tyhp\Io\IoPending;
 
+/**
+ * @internal
+ */
 final class HttpTransfer
 {
+    /**
+     * @var array<string, array<int, string>>
+     */
+    #[\Tyhp\PropertyType('array<string, array<int, string>>')]
     public array $headers = [];
-    public function __construct(public readonly \CurlHandle $handle, public readonly \Tyhp\Io\IoPending $pending, public readonly string $url, public readonly int $timeoutMs, public readonly int $connectTimeoutMs = 0) {}
+    /**
+     * @param \Tyhp\Io\IoPending<\Tyhp\Io\Http\HttpResponse> $pending
+     */
+    public function __construct(public readonly \CurlHandle $handle, #[\Tyhp\PropertyType('Tyhp\\Io\\IoPending<Tyhp\\Io\\Http\\HttpResponse>')] public readonly \Tyhp\Io\IoPending $pending, public readonly string $url, public readonly int $timeoutMs, public readonly int $connectTimeoutMs = 0) {}
     public function headerLine(string $line): void
     {
         $trimmed = \rtrim($line, "\r\n");

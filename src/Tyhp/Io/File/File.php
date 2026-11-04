@@ -24,7 +24,10 @@ use Tyhp\Promise;
  */
 final class File
 {
-    public const int CHUNK_BYTES = 262144;
+    /**
+     * @internal
+     */
+    public const CHUNK_BYTES = 262144;
     public static function readAsync(string $path, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($path, $token): string {
@@ -53,8 +56,11 @@ final class File
     /**
      * Reads the file and decodes it as JSON into T. Throws \JsonException for
      * invalid JSON and IncompatibleTypeException when the value does not match T.
+     *
+     * @template T of array
+     * @return T
      */
-    #[\Tyhp\GenericRuntime(erased: false, binder: "readJsonAsync__tyhpGeneric", layouts: [1], compiler: "805.1.0.0")]
+    #[\Tyhp\GenericRuntime(erased: false, binder: "readJsonAsync__tyhpGeneric", layouts: [1], compiler: "805.1.2.0")]
     public static function readJsonAsync(string $path, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return static::readJsonAsync__tyhpGeneric(null)($path, $token);
@@ -155,11 +161,17 @@ final class File
      * "\n" and "\r\n". The file opens when iteration starts and closes at the end.
      *
      * @example `foreach (await File::linesAsync($path) as $line) { ... }`
+     *
+     * @return \Tyhp\Contracts\AsyncIterable<string>
      */
     public static function linesAsync(string $path): \Tyhp\Contracts\AsyncIterable
     {
         return new FileLines($path);
     }
+    /**
+     * @internal
+     * @return resource
+     */
     public static function open(string $path, string $mode): mixed
     {
         $handle = @\fopen($path, $mode);
@@ -190,6 +202,9 @@ final class File
             }
         });
     }
+    /**
+     * @param resource $handle
+     */
     private static function writeAll(mixed $handle, string $bytes, string $path): void
     {
         $offset = 0;

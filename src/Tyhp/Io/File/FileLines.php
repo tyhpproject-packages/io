@@ -11,9 +11,16 @@ namespace Tyhp\Io\File;
 use Tyhp\Contracts\AsyncIterable;
 use Tyhp\Contracts\AsyncIterator;
 
+/**
+ * @internal
+ * @implements \Tyhp\Contracts\AsyncIterable<string>
+ */
 final class FileLines implements \Tyhp\Contracts\AsyncIterable
 {
     public function __construct(private readonly string $path) {}
+    /**
+     * @return \Tyhp\Contracts\AsyncIterator<string>
+     */
     public function getAsyncIterator(): \Tyhp\Contracts\AsyncIterator
     {
         return new FileLineIterator($this->path);

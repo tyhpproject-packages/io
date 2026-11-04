@@ -27,6 +27,10 @@ use Tyhp\Promise;
 final class RedisClient
 {
     private \Tyhp\Io\Redis\RespParser $parser;
+    /**
+     * @var array<int, \Tyhp\Io\IoPending<mixed>>
+     */
+    #[\Tyhp\PropertyType('array<int, Tyhp\\Io\\IoPending<mixed>>')]
     private array $waiting = [];
     private bool $readerRunning = false;
     private bool $closed = false;
@@ -36,6 +40,8 @@ final class RedisClient
     }
     /**
      * Connects, then sends AUTH and SELECT when the options ask for them.
+     *
+     * @param ?array{host?: string, port?: int, tls?: bool, username?: ?string, password?: ?string, database?: int, connectTimeoutMs?: int} $options
      */
     public static function connectAsync(?array $options = null, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
@@ -76,6 +82,9 @@ final class RedisClient
         }
         throw new \Tyhp\Io\Exceptions\RedisException(('Expected an integer reply, got ' . \get_debug_type($reply)) . '.');
     }
+    /**
+     * @return array<int, string>
+     */
     private static function stringList(mixed $reply): array
     {
         if (!\is_array($reply)) {
@@ -91,6 +100,8 @@ final class RedisClient
      * Sends one command. The reply decodes to string (simple and bulk strings),
      * int, null (nil), or array<int, mixed> (arrays; nested error replies become
      * RedisException values).
+     *
+     * @return \Tyhp\Promise<mixed>
      */
     public function commandAsync(string $name, string|int|float ...$arguments): \Tyhp\Promise
     {
@@ -170,6 +181,8 @@ final class RedisClient
     }
     /**
      * Sets hash fields and returns how many were new.
+     *
+     * @param array<string, string> $fields
      */
     public function hSetAsync(string $key, array $fields): \Tyhp\Promise
     {
@@ -189,6 +202,9 @@ final class RedisClient
             return ($reply === null) ? null : self::stringReply($reply);
         });
     }
+    /**
+     * @return array<string, string>
+     */
     public function hGetAllAsync(string $key): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($key): array {
@@ -218,6 +234,9 @@ final class RedisClient
             return self::intReply(\Tyhp\Promise::_await($this->commandAsync('RPUSH', $key, $value, ...$values)));
         });
     }
+    /**
+     * @return array<int, string>
+     */
     public function lRangeAsync(string $key, int $start = 0, int $stop = -1): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($key, $start, $stop): array {

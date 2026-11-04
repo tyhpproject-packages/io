@@ -11,9 +11,16 @@ namespace Tyhp\Io\Dns;
 use Tyhp\Io\Exceptions\IoException;
 use Tyhp\Io\OffloadJob;
 
+/**
+ * @internal
+ * @implements \Tyhp\Io\OffloadJob<array<int, string>>
+ */
 final class DnsLookup implements \Tyhp\Io\OffloadJob
 {
     public function __construct(private readonly string $host) {}
+    /**
+     * @return array<int, string>
+     */
     public function run(): array
     {
         if (\filter_var($this->host, \FILTER_VALIDATE_IP) !== false) {

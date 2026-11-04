@@ -14,23 +14,39 @@ use Tyhp\Exceptions\TimeoutException;
 use Tyhp\Io\Exceptions\IoException;
 use Tyhp\Io\IoPending;
 
+/**
+ * @internal
+ */
 final class ProcessRun
 {
-    private const int CHUNK_BYTES = 65536;
-    private const int STATUS_POLL_MS = 5;
+    private const CHUNK_BYTES = 65536;
+    private const STATUS_POLL_MS = 5;
     private mixed $process = null;
+    /**
+     * @var array<int, mixed>
+     */
+    #[\Tyhp\PropertyType('array<int, mixed>')]
     private array $pipes = [];
+    /**
+     * @var array<int, string>
+     */
+    #[\Tyhp\PropertyType('array<int, string>')]
     private array $output = [1 => '', 2 => ''];
     private int $inputOffset = 0;
     private ?string $statusTimer = null;
     private ?string $timeoutTimer = null;
     private ?\Tyhp\EventLoop $loop = null;
-    public function __construct(private readonly array $command, private readonly array $options, private readonly \Tyhp\Io\IoPending $pending) {}
+    /**
+     * @param array<int, string> $command
+     * @param array{cwd?: ?string, env?: ?array<string, string>, input?: string, timeoutMs?: int} $options
+     * @param \Tyhp\Io\IoPending<array{command?: array<int, string>, exitCode?: int, signal?: int, stdout?: string, stderr?: string}> $pending
+     */
+    public function __construct(#[\Tyhp\PropertyType('array<int, string>')] private readonly array $command, #[\Tyhp\PropertyType('struct Tyhp\\Io\\Process\\ProcessOptions')] private readonly array $options, #[\Tyhp\PropertyType('Tyhp\\Io\\IoPending<struct Tyhp\\Io\\Process\\ProcessResult>')] private readonly \Tyhp\Io\IoPending $pending) {}
     public function start(?\Tyhp\CancellationToken $token): void
     {
         $spec = [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
         $pipes = [];
-        $process = @\proc_open($this->command, $spec, $pipes, ($this->options['cwd'] ?? null), ($this->options['env'] ?? null));
+        $process = @\proc_open($this->command, $spec, $pipes, $this->options->cwd, $this->options->env);
         if (!\is_resource($process)) {
             $error = \error_get_last();
             throw new \Tyhp\Io\Exceptions\IoException((('Could not start "' . $this->command[0]) . '": ') . (string) ($error['message'] ?? 'proc_open() failed.'));
@@ -44,7 +60,7 @@ final class ProcessRun
         }
         $loop = \Tyhp\EventLoop::getInstance();
         $this->loop = $loop;
-        if ($this->options['input'] === '') {
+        if ($this->options->input === '') {
             $this->closePipe(0);
         } else {
             $loop->addWriteStream(
@@ -68,8 +84,8 @@ final class ProcessRun
                 $this->checkStatus();
             },
         );
-        if ($this->options['timeoutMs'] > 0) {
-            $timeoutMs = $this->options['timeoutMs'];
+        if ($this->options->timeoutMs > 0) {
+            $timeoutMs = $this->options->timeoutMs;
             $this->timeoutTimer = $loop->delay(
                 $timeoutMs,
                 function () use ($timeoutMs): void {
@@ -91,7 +107,7 @@ final class ProcessRun
         if (!\is_resource($pipe)) {
             return;
         }
-        $input = $this->options['input'];
+        $input = $this->options->input;
         $written = @\fwrite($pipe, \substr($input, $this->inputOffset, self::CHUNK_BYTES));
         if ($written === false) {
             $this->closePipe(0);

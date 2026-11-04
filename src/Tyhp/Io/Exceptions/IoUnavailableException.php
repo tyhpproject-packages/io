@@ -17,6 +17,9 @@ final class IoUnavailableException extends \Tyhp\Io\Exceptions\IoException
     {
         parent::__construct($message, 0, $previous);
     }
+    /**
+     * @internal
+     */
     public static function requireExtension(string $extension, string $feature): void
     {
         if (!\extension_loaded($extension)) {

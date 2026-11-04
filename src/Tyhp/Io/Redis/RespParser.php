@@ -13,12 +13,17 @@ use Tyhp\Io\Exceptions\RedisException;
 /**
  * Incremental RESP2 decoder. Error replies nested in an array decode to
  * RedisException values in that array.
+ *
+ * @internal
  */
 final class RespParser
 {
-    private const int COMPACT_BYTES = 65536;
+    private const COMPACT_BYTES = 65536;
     private string $buffer = '';
     private int $offset = 0;
+    /**
+     * @param array<int, string> $arguments
+     */
     public static function encode(array $arguments): string
     {
         $out = ('*' . \count($arguments)) . "\r\n";

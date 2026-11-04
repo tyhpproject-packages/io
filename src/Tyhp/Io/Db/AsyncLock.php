@@ -12,10 +12,16 @@ use Tyhp\Deferred;
 
 /**
  * FIFO mutual exclusion between fibers. release() hands the lock to the next waiter.
+ *
+ * @internal
  */
 final class AsyncLock
 {
     private bool $held = false;
+    /**
+     * @var array<int, \Tyhp\Deferred<void>>
+     */
+    #[\Tyhp\PropertyType('array<int, Tyhp\\Deferred<void>>')]
     private array $waiters = [];
     public function acquire(): \Tyhp\Promise
     {

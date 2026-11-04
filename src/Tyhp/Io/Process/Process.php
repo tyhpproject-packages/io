@@ -27,6 +27,10 @@ final class Process
      * Rejects with IoException when the command cannot start, TimeoutException
      * when options timeoutMs elapses, and OperationCancelledException when $token
      * is cancelled. In both of the last two cases the command is killed first.
+     *
+     * @param array<int, string> $command
+     * @param ?array{cwd?: ?string, env?: ?array<string, string>, input?: string, timeoutMs?: int} $options
+     * @return \Tyhp\Promise<array{command?: array<int, string>, exitCode?: int, signal?: int, stdout?: string, stderr?: string}>
      */
     public static function runAsync(array $command, ?array $options = null, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
@@ -45,6 +49,10 @@ final class Process
     }
     /**
      * Like runAsync(), but throws ProcessFailedException when the exit code is not 0.
+     *
+     * @param array<int, string> $command
+     * @param ?array{cwd?: ?string, env?: ?array<string, string>, input?: string, timeoutMs?: int} $options
+     * @return array{command?: array<int, string>, exitCode?: int, signal?: int, stdout?: string, stderr?: string}
      */
     public static function mustRunAsync(array $command, ?array $options = null, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {

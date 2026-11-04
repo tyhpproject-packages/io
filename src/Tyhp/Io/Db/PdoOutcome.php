@@ -8,8 +8,14 @@ declare(strict_types=1);
 
 namespace Tyhp\Io\Db;
 
+/**
+ * @internal
+ */
 final class PdoOutcome
 {
-    public function __construct(public readonly array $results = [], public readonly ?string $error = null, public readonly string $sqlState = '') {}
+    /**
+     * @param array<int, \Tyhp\Io\Db\DbResult> $results
+     */
+    public function __construct(#[\Tyhp\PropertyType('array<int, Tyhp\\Io\\Db\\DbResult>')] public readonly array $results = [], public readonly ?string $error = null, public readonly string $sqlState = '') {}
 }
 //# sourceMappingURL=PdoOutcome.php.map

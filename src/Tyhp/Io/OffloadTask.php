@@ -10,8 +10,15 @@ namespace Tyhp\Io;
 
 use Tyhp\ParallelTask;
 
+/**
+ * @internal
+ * @implements \Tyhp\ParallelTask<mixed>
+ */
 final class OffloadTask implements \Tyhp\ParallelTask
 {
+    /**
+     * @param \Tyhp\Io\OffloadJob<mixed> $job
+     */
     public function __construct(private readonly \Tyhp\Io\OffloadJob $job) {}
     public function run(): mixed
     {

@@ -27,14 +27,18 @@ final class HttpClient
 {
     private static ?\Tyhp\Io\Http\HttpClient $shared = null;
     private ?\CurlMultiHandle $multi = null;
+    /**
+     * @var array<int, \Tyhp\Io\Http\HttpTransfer>
+     */
+    #[\Tyhp\PropertyType('array<int, Tyhp\\Io\\Http\\HttpTransfer>')]
     private array $transfers = [];
     private ?string $timer = null;
     private ?\Tyhp\EventLoop $timerLoop = null;
     /**
      * @param $defaultHeaders Sent with every request unless the request sets the
-     *     same header name (case-insensitive).
+     * same header name (case-insensitive).
      */
-    public function __construct(private readonly array $defaultHeaders = []) {}
+    public function __construct(#[\Tyhp\PropertyType('array<string, string>')] private readonly array $defaultHeaders = []) {}
     /**
      * A process-wide client with no default headers.
      */
@@ -46,6 +50,8 @@ final class HttpClient
     }
     /**
      * Header names are case-insensitive.
+     *
+     * @param array<string, string> $headers
      */
     private static function hasHeader(array $headers, string $name): bool
     {
@@ -62,6 +68,9 @@ final class HttpClient
      *
      * Rejects with HttpException for transport failures, TimeoutException when
      * timeoutMs elapses, and OperationCancelledException when $token is cancelled.
+     *
+     * @param array{url?: string, method?: string, headers?: array<string, string>, body?: string, timeoutMs?: int, connectTimeoutMs?: int, followRedirects?: bool, maxRedirects?: int, verifyTls?: bool} $request
+     * @return \Tyhp\Promise<\Tyhp\Io\Http\HttpResponse>
      */
     public function sendAsync(array $request, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
@@ -75,10 +84,18 @@ final class HttpClient
         }
         return $pending->promise();
     }
+    /**
+     * @param array<string, string> $headers
+     * @return \Tyhp\Promise<\Tyhp\Io\Http\HttpResponse>
+     */
     public function getAsync(string $url, array $headers = [], ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return $this->sendAsync(['url' => $url, 'method' => 'GET', 'headers' => $headers, 'body' => '', 'timeoutMs' => 30000, 'connectTimeoutMs' => 10000, 'followRedirects' => true, 'maxRedirects' => 5, 'verifyTls' => true], $token);
     }
+    /**
+     * @param array<string, string> $headers
+     * @return \Tyhp\Promise<\Tyhp\Io\Http\HttpResponse>
+     */
     public function postAsync(string $url, string $body, array $headers = [], ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return $this->sendAsync(['url' => $url, 'method' => 'POST', 'headers' => $headers, 'body' => $body, 'timeoutMs' => 30000, 'connectTimeoutMs' => 10000, 'followRedirects' => true, 'maxRedirects' => 5, 'verifyTls' => true], $token);
@@ -86,6 +103,9 @@ final class HttpClient
     /**
      * Sends $payload as a JSON body with Content-Type: application/json.
      * Throws \JsonException when $payload cannot be encoded.
+     *
+     * @param array<string, string> $headers
+     * @return \Tyhp\Promise<\Tyhp\Io\Http\HttpResponse>
      */
     public function postJsonAsync(string $url, mixed $payload, array $headers = [], ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
@@ -97,8 +117,12 @@ final class HttpClient
      * GETs $url, requires a 2xx status, and decodes the body into T. Sends
      * Accept: application/json unless $headers sets an Accept header (the name
      * is matched case-insensitively).
+     *
+     * @template T of array
+     * @param array<string, string> $headers
+     * @return T
      */
-    #[\Tyhp\GenericRuntime(erased: false, binder: "getJsonAsync__tyhpGeneric", layouts: [1], compiler: "805.1.0.0")]
+    #[\Tyhp\GenericRuntime(erased: false, binder: "getJsonAsync__tyhpGeneric", layouts: [1], compiler: "805.1.2.0")]
     public function getJsonAsync(string $url, array $headers = [], ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return $this->getJsonAsync__tyhpGeneric(null)($url, $headers, $token);
@@ -120,6 +144,10 @@ final class HttpClient
             });
         };
     }
+    /**
+     * @param array{url?: string, method?: string, headers?: array<string, string>, body?: string, timeoutMs?: int, connectTimeoutMs?: int, followRedirects?: bool, maxRedirects?: int, verifyTls?: bool} $request
+     * @param \Tyhp\Io\IoPending<\Tyhp\Io\Http\HttpResponse> $pending
+     */
     private function start(array $request, \Tyhp\Io\IoPending $pending, ?\Tyhp\CancellationToken $token): void
     {
         $url = $request['url'];
@@ -177,6 +205,10 @@ final class HttpClient
         );
         $this->schedule();
     }
+    /**
+     * @param array<string, string> $requestHeaders
+     * @return array<int, string>
+     */
     private function headerLines(array $requestHeaders): array
     {
         $merged = [];

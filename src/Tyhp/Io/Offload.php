@@ -24,8 +24,12 @@ final class Offload
     /**
      * Resolves with the job's result. In a worker, a job that throws rejects
      * with ParallelException, and a cancelled token stops the worker.
+     *
+     * @template T
+     * @param \Tyhp\Io\OffloadJob<T> $job
+     * @return T
      */
-    #[\Tyhp\GenericRuntime(erased: false, binder: "runAsync__tyhpGeneric", layouts: [1], compiler: "805.1.0.0")]
+    #[\Tyhp\GenericRuntime(erased: false, binder: "runAsync__tyhpGeneric", layouts: [1], compiler: "805.1.2.0")]
     public static function runAsync(\Tyhp\Io\OffloadJob $job, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return static::runAsync__tyhpGeneric(null)($job, $token);

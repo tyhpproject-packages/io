@@ -14,12 +14,22 @@ namespace Tyhp\Io\Exceptions;
  */
 final class ProcessFailedException extends \Tyhp\Io\Exceptions\IoException
 {
+    /**
+     * @var array{command?: array<int, string>, exitCode?: int, signal?: int, stdout?: string, stderr?: string}
+     */
+    #[\Tyhp\PropertyType('struct Tyhp\\Io\\Process\\ProcessResult')]
     private array $result;
+    /**
+     * @param array{command?: array<int, string>, exitCode?: int, signal?: int, stdout?: string, stderr?: string} $result
+     */
     public function __construct(array $result)
     {
         parent::__construct(((('The command "' . \implode(' ', $result['command'])) . '" exited with code ') . $result['exitCode']) . (($result['stderr'] !== '') ? (': ' . \trim($result['stderr'])) : '.'), $result['exitCode']);
         $this->result = $result;
     }
+    /**
+     * @return array{command?: array<int, string>, exitCode?: int, signal?: int, stdout?: string, stderr?: string}
+     */
     public function getResult(): array
     {
         return $this->result;

@@ -12,15 +12,22 @@ use Tyhp\Contracts\AsyncIterator;
 use Tyhp\Io\Exceptions\IoException;
 use Tyhp\Promise;
 
+/**
+ * @internal
+ * @implements \Tyhp\Contracts\AsyncIterator<string>
+ */
 final class FileLineIterator implements \Tyhp\Contracts\AsyncIterator
 {
-    private const int LINES_PER_YIELD = 1000;
+    private const LINES_PER_YIELD = 1000;
     private mixed $handle = null;
     private bool $done = false;
     private string $line = '';
     private int $sinceYield = 0;
     private int $bytesSinceYield = 0;
     public function __construct(private readonly string $path) {}
+    /**
+     * @return \Tyhp\Promise<bool>
+     */
     public function next(): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () {
@@ -50,6 +57,9 @@ final class FileLineIterator implements \Tyhp\Contracts\AsyncIterator
             return true;
         });
     }
+    /**
+     * @return \Tyhp\Promise<string>
+     */
     public function current(): \Tyhp\Promise
     {
         return \Tyhp\Generic::bind(\Tyhp\Promise::resolved(...), \Tyhp\Type::string())($this->line);

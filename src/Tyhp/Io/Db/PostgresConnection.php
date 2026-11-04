@@ -68,6 +68,9 @@ final class PostgresConnection implements DbConnection
             return new PostgresConnection($pg);
         });
     }
+    /**
+     * @return resource
+     */
     private static function socketOf(\PgSql\Connection $pg): mixed
     {
         $socket = \pg_socket($pg);
@@ -119,6 +122,9 @@ final class PostgresConnection implements DbConnection
         }
         return $value;
     }
+    /**
+     * @param array<int, int|float|string|bool|null> $params
+     */
     public function queryAsync(string $sql, array $params = [], ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($sql, $params, $token): \Tyhp\Io\Db\DbResult {
@@ -130,6 +136,10 @@ final class PostgresConnection implements DbConnection
             }
         });
     }
+    /**
+     * @param array<int, array{sql?: string, params?: array<int, int|float|string|bool|null>}> $statements
+     * @return array<int, \Tyhp\Io\Db\DbResult>
+     */
     public function transactionAsync(array $statements, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($statements, $token): array {
@@ -147,7 +157,7 @@ final class PostgresConnection implements DbConnection
                         try {
                             \Tyhp\Promise::_await($this->execute('ROLLBACK', [], null));
                         } catch (\Throwable $rollbackError) {
-                            (void) $rollbackError;
+                            $rollbackError;
                         }
                     }
                     throw $e;
@@ -166,6 +176,9 @@ final class PostgresConnection implements DbConnection
         $this->closed = true;
         \pg_close($this->pg);
     }
+    /**
+     * @param array<int, int|float|string|bool|null> $params
+     */
     private function execute(string $sql, array $params, ?\Tyhp\CancellationToken $token): \Tyhp\Promise
     {
         return \Tyhp\Promise::_async(function () use ($sql, $params, $token): \Tyhp\Io\Db\DbResult {

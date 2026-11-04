@@ -20,7 +20,10 @@ use Tyhp\Json;
  */
 final class HttpResponse
 {
-    public function __construct(public readonly int $status, public readonly array $headers, public readonly string $body, public readonly string $url) {}
+    /**
+     * @param array<string, array<int, string>> $headers
+     */
+    public function __construct(public readonly int $status, #[\Tyhp\PropertyType('array<string, array<int, string>>')] public readonly array $headers, public readonly string $body, public readonly string $url) {}
     public function isSuccess(): bool
     {
         return ($this->status >= 200) && ($this->status < 300);
@@ -33,6 +36,9 @@ final class HttpResponse
         $values = $this->headers[\strtolower($name)] ?? [];
         return $values[0] ?? null;
     }
+    /**
+     * @return array<int, string>
+     */
     public function headerValues(string $name): array
     {
         return $this->headers[\strtolower($name)] ?? [];
@@ -40,8 +46,11 @@ final class HttpResponse
     /**
      * Decodes the body as JSON into T. Throws \JsonException for invalid JSON and
      * IncompatibleTypeException when the value does not match T.
+     *
+     * @template T of array
+     * @return T
      */
-    #[\Tyhp\GenericRuntime(erased: false, binder: "json__tyhpGeneric", layouts: [1], compiler: "805.1.0.0")]
+    #[\Tyhp\GenericRuntime(erased: false, binder: "json__tyhpGeneric", layouts: [1], compiler: "805.1.2.0")]
     public function json(): array
     {
         return $this->json__tyhpGeneric(null)();

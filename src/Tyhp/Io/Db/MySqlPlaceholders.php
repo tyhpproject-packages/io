@@ -11,9 +11,15 @@ namespace Tyhp\Io\Db;
 /**
  * Replaces ? placeholders with escaped literals. A ? inside a quoted string,
  * a backtick identifier, or a comment is left alone.
+ *
+ * @internal
  */
 final class MySqlPlaceholders
 {
+    /**
+     * @param array<int, int|float|string|bool|null> $params
+     * @param callable(string): string $escape
+     */
     public static function interpolate(string $sql, array $params, callable $escape): string
     {
         $values = \array_values($params);
@@ -82,6 +88,9 @@ final class MySqlPlaceholders
         $next = $sql[$i + 2] ?? '';
         return (((($next === '') || ($next === ' ')) || ($next === "\t")) || ($next === "\n")) || ($next === "\r");
     }
+    /**
+     * @param callable(string): string $escape
+     */
     private static function literal(int|float|string|bool|null $value, callable $escape): string
     {
         if ($value === null) {

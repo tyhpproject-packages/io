@@ -24,6 +24,8 @@ final class Dns
      * process. When Offload runs it in a tyhp/parallel worker
      * (Offload::usesWorkers()), a failure, including nothing resolving, rejects
      * with ParallelException instead.
+     *
+     * @return \Tyhp\Promise<array<int, string>>
      */
     public static function resolveAsync(string $host, ?\Tyhp\CancellationToken $token = null): \Tyhp\Promise
     {

@@ -14,10 +14,14 @@ namespace Tyhp\Io;
  * When the job runs in a tyhp/parallel worker, it follows the ParallelTask
  * rules: the object and its result must be serializable, and the worker must
  * be able to autoload the class.
- * @template T
+ *
+ * @template T = mixed
  */
 interface OffloadJob
 {
+    /**
+     * @return T
+     */
     public function run(): mixed;
 }
 //# sourceMappingURL=OffloadJob.php.map

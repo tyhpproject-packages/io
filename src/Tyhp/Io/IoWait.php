@@ -16,13 +16,21 @@ use Tyhp\Promise;
 /**
  * Waits on the event loop for one stream to become readable or writable.
  * A stream has one waiter per direction at a time.
+ *
+ * @internal
  */
 final class IoWait
 {
+    /**
+     * @return \Tyhp\Promise<void>
+     */
     public static function readable(mixed $stream, ?\Tyhp\CancellationToken $token = null, int $timeoutMs = 0): \Tyhp\Promise
     {
         return self::wait($stream, false, $token, $timeoutMs)->promise();
     }
+    /**
+     * @return \Tyhp\Promise<void>
+     */
     public static function writable(mixed $stream, ?\Tyhp\CancellationToken $token = null, int $timeoutMs = 0): \Tyhp\Promise
     {
         return self::wait($stream, true, $token, $timeoutMs)->promise();
@@ -30,6 +38,8 @@ final class IoWait
     /**
      * Rejecting the returned wait does not unregister the stream; the owner must
      * remove it from the event loop before closing it.
+     *
+     * @return \Tyhp\Io\IoPending<void>
      */
     public static function wait(mixed $stream, bool $write, ?\Tyhp\CancellationToken $token = null, int $timeoutMs = 0): \Tyhp\Io\IoPending
     {
